@@ -1,0 +1,41 @@
+{
+  "name": "react-axios-adapter",
+  "version": "0.0.1",
+  "main": "lib/index.js",
+  "description": "adapter and mock components for react + axios",
+  "license": "MIT",
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "npm run type-check -- --watch",
+    "build": "npm run build:types && npm run build:js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "babel src --out-dir lib --extensions \".ts,.tsx\"",
+    "build:jsWithSourceMap": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArisAgeha/react-axios-adapter.git"
+  },
+  "keywords": [
+    "measure",
+    "performance"
+  ],
+  "author": "ArisAgeha <87725092@qq.com>",
+  "bugs": {
+    "url": "https://github.com/ArisAgeha/react-axios-adapter/issues"
+  },
+  "homepage": "https://github.com/ArisAgeha/react-axios-adapter",
+  "devDependencies": {
+    "typescript": "^4.2.4",
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.9.5",
+    "@babel/polyfill": "^7.8.7",
+    "@babel/preset-env": "^7.9.5",
+    "@babel/preset-typescript": "^7.9.0"
+  },
+  "dependencies": {
+    "moment": "^2.29.1"
+  }
+}
