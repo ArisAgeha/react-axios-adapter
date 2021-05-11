@@ -1,10 +1,11 @@
 
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Input } from 'antd';
-import { AdapterData, ApiData, Settings } from '../axiosAdapter';
+import { AdapterData, ApiData, Settings } from '../index';
 import { theme } from '../theme';
-import { CaretDownOutlined, CaretRightOutlined } from '_@ant-design_icons@4.2.2@@ant-design/icons';
+import { CaretDownOutlined, CaretRightOutlined, DeleteOutlined } from '@ant-design/icons';
 import { ApiRow } from '../components/adapterDataPanelComponents/apiRow/apiRow';
+import { FocusInput } from '../components/focusInput';
 
 interface Props {
   adapterData: AdapterData;
@@ -45,6 +46,19 @@ export const AdapterDataPanel: React.FC<Props> = ({ adapterData, onUpdateAdapter
     onUpdateAdapterData(newAdapterData);
   }
 
+  function handleDeleteRow(site: string, index: number) {
+    const newAdapterData = { ...adapterData };
+    newAdapterData[site].splice(index, 1);
+    onUpdateAdapterData(newAdapterData);
+  }
+
+
+  function handleDeleteSite(site: string) {
+    const newAdapterData = { ...adapterData };
+    delete newAdapterData[site];
+    onUpdateAdapterData(newAdapterData);
+  }
+
   function handleActiveSite(site: string) {
     const newBannerSite = { ...bannedSite };
     newBannerSite[site] = false;
@@ -57,9 +71,14 @@ export const AdapterDataPanel: React.FC<Props> = ({ adapterData, onUpdateAdapter
     onUpdateSettingsField('bannedSite', newBannerSite);
   }
 
+  function updateFields(field: string, value: any) {
+    onUpdateSettingsField(field, value);
+  }
+
+
   return (
     <div style={{ height: '600px', overflowY: 'auto' }}>
-      <div style={{ marginBottom: '16px', display: 'flex' }}>
+      <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center' }}>
         <Input
           style={{ width: '240px', marginRight: '16px' }}
           value={filterSite}
@@ -75,11 +94,15 @@ export const AdapterDataPanel: React.FC<Props> = ({ adapterData, onUpdateAdapter
           placeholder={'过滤url...'}
         />
         <Input
-          style={{ width: '120px' }}
+          style={{ width: '120px', marginRight: '16px' }}
           value={filterStatus}
           onChange={(ev) => { setFilterStatus(ev.target.value) }}
           size="small"
           placeholder={'过滤状态码...'}
+        />
+        <FocusInput
+          value={settings.fieldFocus}
+          onChange={(value) => { updateFields('fieldFocus', value); }}
         />
       </div>
 
@@ -134,6 +157,11 @@ export const AdapterDataPanel: React.FC<Props> = ({ adapterData, onUpdateAdapter
                         </span>
                       )
                   }
+
+                  <span style={{ marginLeft: '4px', color: 'rgb(255 0 160)' }} onClick={() => { handleDeleteSite(item.site) }}>
+                    <DeleteOutlined />
+                  </span>
+
                   <span style={{ marginLeft: '4px' }}>调用归属域名：{item.site}</span>
                 </div>
               </div>
@@ -141,11 +169,12 @@ export const AdapterDataPanel: React.FC<Props> = ({ adapterData, onUpdateAdapter
               { expandedKey.includes(item.site) && (
                 <ApiRow
                   rowData={item.apiData}
-                  onUpdateRowData={(rowData) => { handleUpdateRowData(item.site, rowData) }}
                   settings={settings}
-                  onUpdateSettingsField={onUpdateSettingsField}
                   filterUrl={filterUrl}
                   filterStatus={filterStatus}
+                  onUpdateRowData={(rowData) => { handleUpdateRowData(item.site, rowData) }}
+                  onUpdateSettingsField={onUpdateSettingsField}
+                  onDeleteRow={(index) => { handleDeleteRow(item.site, index) }}
                 />
               )}
             </div>

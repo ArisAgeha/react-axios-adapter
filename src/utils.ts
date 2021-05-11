@@ -1,5 +1,5 @@
 export function isLocal() {
-  return window.location.host.indexOf('localhost') !== -1;
+  return window.location.host.includes('localhost');
 }
 
 export function isIp() {
@@ -7,7 +7,7 @@ export function isIp() {
 }
 
 export function isTestServer() {
-  return window.location.hostname.includes('test.');
+  return window.location.hostname.includes('');
 }
 
 export function isObject(target: any) {

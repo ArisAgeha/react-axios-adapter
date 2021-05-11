@@ -1,20 +1,27 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { Modal, Form, Button, Switch } from 'antd';
-import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons';
-import { theme } from '../../../theme';
-import { ApiData, Settings } from '../../../axiosAdapter';
+import React, { useState } from 'react';
+import { CaretDownOutlined, CaretRightOutlined, DeleteOutlined } from '@ant-design/icons';
+import { ApiData, Settings } from '../../../index';
 import { ApiRowTable } from '../apiRowTable/apiRowTable';
 
 interface Props {
   rowData: ApiData[];
-  onUpdateRowData(rowData: ApiData[]): void;
   settings: Settings;
-  onUpdateSettingsField(field: string, value: any): void;
   filterUrl: string;
   filterStatus: string;
+  onUpdateRowData(rowData: ApiData[]): void;
+  onUpdateSettingsField(field: string, value: any): void;
+  onDeleteRow(index: number): void;
 }
 
-export const ApiRow: React.FC<Props> = ({ rowData, onUpdateRowData, settings, onUpdateSettingsField, filterUrl, filterStatus }) => {
+export const ApiRow: React.FC<Props> = ({
+  rowData,
+  onUpdateRowData,
+  settings,
+  onUpdateSettingsField,
+  filterUrl,
+  filterStatus,
+  onDeleteRow
+}) => {
   const [expandedApiKey, setExpandedApiKey] = useState<string[]>([]);
   const { bannedUrl } = settings;
 
@@ -104,6 +111,10 @@ export const ApiRow: React.FC<Props> = ({ rowData, onUpdateRowData, settings, on
                       )
                   }
 
+                  <span style={{ marginLeft: '8px', color: 'red' }} onClick={() => { onDeleteRow(index) }}>
+                    <DeleteOutlined />
+                  </span>
+
                   <div style={{ marginLeft: '4px', display: 'inline-block' }}>
                     <span style={{
                       display: 'inline-block',
@@ -120,6 +131,7 @@ export const ApiRow: React.FC<Props> = ({ rowData, onUpdateRowData, settings, on
                     <span style={{ display: 'inline-block' }}>
                       {apiData.url}
                     </span>
+
                   </div>
                 </div>
               </div>
