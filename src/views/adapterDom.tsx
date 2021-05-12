@@ -100,7 +100,7 @@ export class AdapterDom extends React.PureComponent<Props, State> {
       if (this.state.settings.switch) {
         const { bannedUrl, bannedSite } = this.state.settings;
         const site = location.href;
-        const url = this.isAbsoluteURL(cfg.url) ? cfg.url : this.combineURLs(cfg.url, cfg.baseURL);
+        const url = this.isAbsoluteURL(cfg.url) ? cfg.url : this.combineURLs(cfg.baseURL, cfg.url);
 
         if (!url) return { ...cfg };
         if (!this.isUrlMatchRegExp(url) || !this.isSiteMatchRegExp(site)) return { ...cfg };
