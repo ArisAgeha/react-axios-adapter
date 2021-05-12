@@ -1,5 +1,5 @@
 import React, { useState, useEffect, } from 'react';
-import { Input, message } from 'antd';
+import { Input } from 'antd';
 
 interface Props {
   value: number;

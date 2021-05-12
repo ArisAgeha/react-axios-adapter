@@ -37,6 +37,7 @@ export interface InitOptions {
 export interface Settings {
   switch: boolean;
   saveSwitch: boolean;
+  ignoreParams: boolean;
   includeRegexp: string;
   excludeRegexp: string;
   includeSiteRegexp: string;
@@ -59,6 +60,7 @@ const defaultOptions: InitOptions = {
 const defaultSettings: Settings = {
   switch: false,
   saveSwitch: false,
+  ignoreParams: false,
   includeRegexp: '',
   excludeRegexp: '',
   includeSiteRegexp: '',

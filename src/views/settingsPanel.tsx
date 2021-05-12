@@ -56,6 +56,10 @@ export const SettingsPanel: React.FC<Props> = ({ settings, onUpdateSettingsField
           }}
         </Form.Item>
 
+        <Form.Item name="ignoreParams" label="忽略请求参数" valuePropName="checked">
+          <Switch onChange={(value) => { updateFields('ignoreParams', value); }} />
+        </Form.Item>
+
         <Form.Item name="includeSiteRegexp" label="匹配域名（正则表达式）">
           <Input onBlur={(event) => { updateFields('includeSiteRegexp', event.target.value); }} placeholder={'仅在匹配成功的域名下开启缓存'} />
         </Form.Item>

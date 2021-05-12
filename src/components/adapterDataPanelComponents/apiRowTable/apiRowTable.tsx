@@ -4,7 +4,7 @@ import { ApiData, Params, Settings } from '../../../index';
 import { ColumnType } from 'antd/lib/table';
 import { JSONInput } from '../../jsonInput';
 import { StatusInput } from '../../statusInput';
-import { isObject } from '@/utils/AxiosAdapter/utils';
+import { isObject } from '../../../utils';
 
 interface Props {
   tableData: ApiData;

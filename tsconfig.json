@@ -1,32 +1,30 @@
 {
   "compilerOptions": {
-    "target": "ES2018",
-    "module": "CommonJS",
-    "lib": ["dom", "esnext"],
+    "target": "esnext",
+    "module": "commonjs",
     "declaration": true,
-    "declarationMap": true,
-    "noEmit": true,
-    "jsx": "react",
-    "strict": true,
-    "pretty": true,
-    "sourceMap": true,
-    /* Additional Checks */
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    /* Module Resolution Options */
-    "moduleResolution": "node",
+    "outDir": "lib",
     "esModuleInterop": true,
+    "jsx": "react",
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "noUnusedLocals": true,
     "allowJs": true,
-    /* decorators */
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "baseUrl": "./",
-    "paths": {
-      "*": ["node_modules/*"]
-    }
-  }
+    "experimentalDecorators": true
+  },
+  "exclude": [
+    "node_modules",
+    "build",
+    "scripts",
+    "lib",
+    "acceptance-tests",
+    "webpack",
+    "jest",
+    "src/setupTests.ts",
+    "tslint:latest",
+    "tslint-config-prettier"
+  ]
 }

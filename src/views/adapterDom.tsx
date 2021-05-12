@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { AxiosInstance, AxiosResponse } from 'axios';
-import { AdapterData, InitOptions, Method, Settings } from '../index';
-import { Modal, Tabs, message, Button } from 'antd';
+import { AdapterData, InitOptions, Method, Params, Settings } from '../index';
+import { Modal, Tabs, message } from 'antd';
 import { SettingsPanel } from './settingsPanel';
 import { GlobalOutlined } from '@ant-design/icons';
 import { AdapterDataPanel } from './adapterDataPanel';
@@ -33,6 +33,8 @@ type PruneData = {
 }
 
 export class AdapterDom extends React.PureComponent<Props, State> {
+  readonly ignoreParamsSymbol = '__ignoreParamsSymbol__';
+
   el: HTMLDivElement;
   rootEl?: HTMLElement;
   dragging: boolean = false;
@@ -141,7 +143,7 @@ export class AdapterDom extends React.PureComponent<Props, State> {
   }
 
   extractAdapterData = (url: string = '', method: string = '', jsonData: string) => {
-    const { adapterData } = this.state;
+    const { adapterData, settings } = this.state;
 
     const site = location.href;
     const namespace = adapterData[site];
@@ -153,9 +155,10 @@ export class AdapterDom extends React.PureComponent<Props, State> {
 
     if (!targetUrlScope) return null;
 
-    const targetParamsScope = targetUrlScope.params.find(item => {
-      return item.data === jsonData;
-    });
+    let targetParamsScope: Params | undefined;
+
+    if (settings.ignoreParams && targetUrlScope?.params?.length > 0) targetParamsScope = targetUrlScope.params[0];
+    else targetParamsScope = targetUrlScope.params.find(item => item.data === jsonData);
 
     if (targetParamsScope) return targetParamsScope.response;
     else return null;
@@ -193,7 +196,7 @@ export class AdapterDom extends React.PureComponent<Props, State> {
   }
 
   updateAdapterData = (url: string, method: Method, requestData: string, responseData: any, status: number) => {
-    const { adapterData } = this.state;
+    const { adapterData, settings } = this.state;
     const { onUpdateAdapterData } = this.props;
     const site = location.href;
     let namespace = adapterData[site];
@@ -213,7 +216,9 @@ export class AdapterDom extends React.PureComponent<Props, State> {
 
     namespace[targetUrlScopeIndex].lastCallTime = Number(new Date());
 
-    const paramsTargetIndex = namespace[targetUrlScopeIndex].params.findIndex(item => item.data === requestData)
+    const searchParams = settings.ignoreParams ? this.ignoreParamsSymbol : requestData;
+
+    const paramsTargetIndex = namespace[targetUrlScopeIndex].params.findIndex(item => item.data === searchParams)
 
     if (paramsTargetIndex === -1) {
       namespace[targetUrlScopeIndex].params.push({

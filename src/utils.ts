@@ -7,7 +7,7 @@ export function isIp() {
 }
 
 export function isTestServer() {
-  return window.location.hostname.includes('');
+  return window.location.hostname.includes('test.yingzhongshare.com');
 }
 
 export function isObject(target: any) {
