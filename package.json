@@ -1,6 +1,6 @@
 {
   "name": "react-axios-adapter",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "lib/index.js",
   "description": "adapter and mock components for react + axios",
   "license": "MIT",

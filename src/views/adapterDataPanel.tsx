@@ -6,6 +6,7 @@ import { theme } from '../theme';
 import { CaretDownOutlined, CaretRightOutlined, DeleteOutlined } from '@ant-design/icons';
 import { ApiRow } from '../components/adapterDataPanelComponents/apiRow/apiRow';
 import { FocusInput } from '../components/focusInput';
+import 'antd/dist/antd.css';
 
 interface Props {
   adapterData: AdapterData;
