@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { AxiosInstance, AxiosResponse } from 'axios';
 import { AdapterData, InitOptions, Method, Params, Settings } from '../index';
 import { Modal, Tabs, message } from 'antd';
