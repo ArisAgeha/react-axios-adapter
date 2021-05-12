@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM, { render } from 'react-dom';
 import { AxiosInstance } from "axios";
 import { AdapterDom } from './views/adapterDom';
 import { isObject } from './utils';
@@ -81,6 +82,9 @@ export class AxiosAdapter {
   private service: AxiosInstance | undefined;
   private dom: JSX.Element | null = null;
 
+  el: HTMLDivElement;
+  rootEl?: HTMLElement;
+
   constructor(service: AxiosInstance, options: Partial<InitOptions> = {}, symbol: symbol) {
     if (symbol !== AxiosAdapter._symbol) throw new Error('please init instance by [getInstance] method');
 
@@ -88,6 +92,8 @@ export class AxiosAdapter {
     this.options = options as InitOptions;
     this.service = service;
     this.initAdapterData(options as InitOptions);
+
+    this.el = document.createElement('div');
   }
 
   public static getInstance(service: AxiosInstance, options?: Partial<InitOptions>) {
@@ -142,16 +148,34 @@ export class AxiosAdapter {
     if (this.dom) {
       return this.dom;
     } else {
-      const dom = (<AdapterDom
-        adapterData={this.adapterData}
-        settings={this.settings}
-        service={this.service as AxiosInstance}
-        options={this.options}
-        onUpdateAdapterData={(val: AdapterData) => { this.adapterData = val; }}
-        onUpdateSettings={(val: Settings) => { this.settings = val; }}
-      />);
+      this.el = document.createElement('div');
+      this.initPortal(this.options);
+
+      const dom = ReactDOM.createPortal(
+        <AdapterDom
+          adapterData={this.adapterData}
+          settings={this.settings}
+          service={this.service as AxiosInstance}
+          options={this.options}
+          onUpdateAdapterData={(val: AdapterData) => { this.adapterData = val; }}
+          onUpdateSettings={(val: Settings) => { this.settings = val; }}
+        />,
+        this.el
+      )
+
+      render(dom, this.el);
+
       this.dom = dom;
       return dom;
     }
+  }
+
+  initPortal(options: InitOptions) {
+    const targetNode = typeof options.mountNode === 'string' ? document.getElementById(options.mountNode) : options.mountNode;
+    if (!targetNode) {
+      throw new Error(`cannot find mountNode: [${String(options.mountNode)}], please check if the spcify node is exsits`);
+    }
+    this.rootEl = targetNode;
+    this.rootEl?.appendChild(this.el);
   }
 }

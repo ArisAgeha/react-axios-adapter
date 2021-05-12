@@ -35,18 +35,13 @@ type PruneData = {
 export class AdapterDom extends React.PureComponent<Props, State> {
   readonly ignoreParamsSymbol = '__ignoreParamsSymbol__';
 
-  el: HTMLDivElement;
-  rootEl?: HTMLElement;
   dragging: boolean = false;
   isMove: boolean = false;
   interval: NodeJS.Timeout | null = null;
 
   constructor(props: Props) {
     super(props);
-    const { service, options, settings, adapterData } = props;
-
-    this.el = document.createElement('div');
-    this.initPortal(options);
+    const { service, settings, adapterData } = props;
 
     this.useRequestAdapter(service);
     this.useResponseAdapter(service);
@@ -61,24 +56,14 @@ export class AdapterDom extends React.PureComponent<Props, State> {
     }
   }
 
-  initPortal(options: InitOptions) {
-    const targetNode = typeof options.mountNode === 'string' ? document.getElementById(options.mountNode) : options.mountNode;
-    if (!targetNode) {
-      throw new Error(`cannot find mountNode: [${String(options.mountNode)}], please check if the spcify node is exsits`);
-    }
-    this.rootEl = targetNode;
-  }
-
   componentDidMount() {
     const { options } = this.props;
-    this.rootEl?.appendChild(this.el);
     document.addEventListener('mousemove', this.mousemoveEvent);
 
     if (options.intervalTime) this.interval = setInterval(this.saveToSource, options.intervalTime);
   }
 
   componentWillUnmount() {
-    this.rootEl?.removeChild(this.el);
     document.removeEventListener('mousemove', this.mousemoveEvent);
 
     if (this.interval) clearInterval(this.interval);
@@ -361,73 +346,70 @@ export class AdapterDom extends React.PureComponent<Props, State> {
       ? theme.color6
       : (settings.saveSwitch ? theme.special : theme.disabled);
 
-    return ReactDOM.createPortal(
-      (
-        <>
-          <div
-            style={{
-              boxShadow: `0px 0px 3px 2px ${iconColor}`,
-              backgroundColor: iconColor,
-              color: theme.color1,
-              cursor: 'pointer',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              position: 'fixed',
-              right: `${x}px`,
-              bottom: `${y}px`,
-              height: '50px',
-              width: '50px',
-              borderRadius: '50%',
-              fontSize: '28px',
-              zIndex: 99999,
-            }}
-            onMouseDown={(e) => { e.stopPropagation(); this.handleMousedown(); }}
-            onMouseUp={(e) => { e.stopPropagation(); this.handleMouseUp(); }}
-          >
-            <GlobalOutlined />
-          </div>
+    return (
+      <>
+        <div
+          style={{
+            boxShadow: `0px 0px 3px 2px ${iconColor}`,
+            backgroundColor: iconColor,
+            color: theme.color1,
+            cursor: 'pointer',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'fixed',
+            right: `${x}px`,
+            bottom: `${y}px`,
+            height: '50px',
+            width: '50px',
+            borderRadius: '50%',
+            fontSize: '28px',
+            zIndex: 99999,
+          }}
+          onMouseDown={(e) => { e.stopPropagation(); this.handleMousedown(); }}
+          onMouseUp={(e) => { e.stopPropagation(); this.handleMouseUp(); }}
+        >
+          <GlobalOutlined />
+        </div>
 
-          <Modal
-            visible={modalVisible}
-            onCancel={this.changeModalVisible}
-            footer={null}
-            width={1200}
-          >
-            <div style={{
-              margin: '16px',
-              color: '#fff',
-            }}>
-              <div
-                style={{
-                  cursor: 'pointer',
-                  padding: '0 16px',
-                  borderRadius: '16px',
-                  background: settingsHasChanged ? theme.special : theme.color6,
-                  display: 'inline-block',
-                  transition: '0.2s ease-in-out'
-                }}
-                onClick={() => { this.saveToSource(); message.success('同步完成'); }}>
-                立即保存配置
+        <Modal
+          visible={modalVisible}
+          onCancel={this.changeModalVisible}
+          footer={null}
+          width={1200}
+        >
+          <div style={{
+            margin: '16px',
+            color: '#fff',
+          }}>
+            <div
+              style={{
+                cursor: 'pointer',
+                padding: '0 16px',
+                borderRadius: '16px',
+                background: settingsHasChanged ? theme.special : theme.color6,
+                display: 'inline-block',
+                transition: '0.2s ease-in-out'
+              }}
+              onClick={() => { this.saveToSource(); message.success('同步完成'); }}>
+              立即保存配置
               </div>
-            </div>
-            <Tabs defaultActiveKey="settings" tabPosition={'left'} style={{ paddingRight: '32px' }}>
-              <Tabs.TabPane tab={`Settings`} key={'settings'}>
-                <SettingsPanel settings={settings} onUpdateSettingsField={this.handleUpdateSettingsFields} />
-              </Tabs.TabPane>
-              <Tabs.TabPane tab={`Adapter Data`} key={'adapterData'}>
-                <AdapterDataPanel
-                  adapterData={adapterData}
-                  onUpdateAdapterData={(value) => { this.handleUpdateAdapterData(value) }}
-                  settings={settings}
-                  onUpdateSettingsField={this.handleUpdateSettingsFields}
-                />
-              </Tabs.TabPane>
-            </Tabs>
-          </Modal>
-        </>
-      ),
-      this.el
+          </div>
+          <Tabs defaultActiveKey="settings" tabPosition={'left'} style={{ paddingRight: '32px' }}>
+            <Tabs.TabPane tab={`Settings`} key={'settings'}>
+              <SettingsPanel settings={settings} onUpdateSettingsField={this.handleUpdateSettingsFields} />
+            </Tabs.TabPane>
+            <Tabs.TabPane tab={`Adapter Data`} key={'adapterData'}>
+              <AdapterDataPanel
+                adapterData={adapterData}
+                onUpdateAdapterData={(value) => { this.handleUpdateAdapterData(value) }}
+                settings={settings}
+                onUpdateSettingsField={this.handleUpdateSettingsFields}
+              />
+            </Tabs.TabPane>
+          </Tabs>
+        </Modal>
+      </>
     )
   }
 }
