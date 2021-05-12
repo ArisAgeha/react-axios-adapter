@@ -100,7 +100,7 @@ export class AdapterDom extends React.PureComponent<Props, State> {
       if (this.state.settings.switch) {
         const { bannedUrl, bannedSite } = this.state.settings;
         const site = location.href;
-        const url = cfg.url;
+        const url = this.isAbsoluteURL(cfg.url) ? cfg.url : this.combineURLs(cfg.url, cfg.baseURL);
 
         if (!url) return { ...cfg };
         if (!this.isUrlMatchRegExp(url) || !this.isSiteMatchRegExp(site)) return { ...cfg };
@@ -125,6 +125,16 @@ export class AdapterDom extends React.PureComponent<Props, State> {
       return { ...cfg };
     })
   }
+
+  isAbsoluteURL(url: string) {
+    return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
+  };
+
+  combineURLs(baseURL: string, relativeURL: string) {
+    return relativeURL
+      ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
+      : baseURL;
+  };
 
   extractAdapterData = (url: string = '', method: string = '', jsonData: string) => {
     const { adapterData, settings } = this.state;
